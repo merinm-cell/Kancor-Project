@@ -5,6 +5,11 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from fastapi import WebSocket, WebSocketDisconnect
+from typing import Set
+import logging
+logging.basicConfig(level=logging.INFO)
+
 
 
 
@@ -31,6 +36,8 @@ topic = "project"
 def on_connect(client, userdata, flags, rc):     
     print("✅ Connected to MQTT broker with result code " + str(rc))
     client.subscribe(topic)
+
+connected_clients = set()
 
 #runs when a message is received.
 def on_message(client, userdata, msg):   
@@ -83,3 +90,14 @@ def create_db():
     db.commit()
     db.close()
     return {"message": "DB file created with sample value ✅"}
+
+@app.websocket("/ws/temperature")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    connected_clients.add(websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        connected_clients.remove(websocket)
+
