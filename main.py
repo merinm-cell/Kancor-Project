@@ -10,6 +10,18 @@ import asyncio
 import logging
 import queue
 import threading
+import smtplib
+from email.message import EmailMessage
+
+ALERT_LOW = 7.0
+ALERT_HIGH = 10.0
+
+SMTP_EMAIL = "nora.antu2001@gmail.com"       # Replace with your email
+SMTP_PASSWORD = "ewnb rcya qqxo qyow"        # Use an app password
+SMTP_TO = "22cs349@mgits.ac.in"          # Who gets the alert
+SMTP_SERVER = "smtp.gmail.com"
+SMTP_PORT = 465
+
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -76,10 +88,11 @@ async def get_temperatures():
         ]
 
 @app.get("/test-create-db")
-async def create_db():
-    with SessionLocal() as db:
-        db.add(Temperature(value=60.0))
-        db.commit()
+def create_db():
+    db = SessionLocal()
+    db.add(Temperature(value=60.0))
+    db.commit()
+    db.close()
     return {"message": "DB file created with sample value ✅"}
 
 # --- HiveMQ Cloud MQTT Configuration ---
@@ -91,6 +104,27 @@ password = "#Kancor213"
 client_id = "FastAPI-Backend"
 
 # --- MQTT Callback Handlers ---
+
+def send_temperature_alert(temp_value: float):
+    subject = "🚨 Temperature Alert"
+    body = f"Alert! Temperature is out of safe range: {temp_value}°C.\n" \
+           f"Safe Range: {ALERT_LOW}°C to {ALERT_HIGH}°C."
+
+    msg = EmailMessage()
+    msg["Subject"] = subject
+    msg["From"] = SMTP_EMAIL
+    msg["To"] = SMTP_TO
+    msg.set_content(body)
+
+    try:
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+            server.login(SMTP_EMAIL, SMTP_PASSWORD)
+            server.send_message(msg)
+        logger.info("📧 Alert email sent successfully.")
+    except Exception as e:
+        logger.error(f"❌ Failed to send alert email: {e}")
+
+
 def on_connect(client, userdata, flags, rc, properties=None):
     if rc == 0:
         logger.info("✅ Connected to HiveMQ Cloud")
@@ -102,17 +136,25 @@ def on_message(client, userdata, msg):
     try:
         value = msg.payload.decode()
         temp_value = float(value.strip())
+
+        # Save to DB
         with SessionLocal() as db:
             db.add(Temperature(value=temp_value))
             db.commit()
         logger.info(f"📡 Stored temperature: {temp_value}")
 
-        # Add to queue for WebSocket broadcasting
+        # WebSocket broadcast
         message_queue.put(temp_value)
+
+        # ALERT CHECK AND EMAIL
+        if temp_value < ALERT_LOW or temp_value > ALERT_HIGH:
+            send_temperature_alert(temp_value)
+
     except ValueError as e:
         logger.error(f"❌ Invalid payload: {value}, error: {e}")
     except Exception as e:
         logger.error(f"❌ Error processing message: {e}")
+
 
 def on_disconnect(client, userdata, rc, properties=None):
     logger.warning(f"Disconnected with code {rc}. Reconnecting...")
