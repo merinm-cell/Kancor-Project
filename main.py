@@ -87,13 +87,7 @@ async def get_temperatures():
             for t in temps
         ]
 
-@app.get("/test-create-db")
-def create_db():
-    db = SessionLocal()
-    db.add(Temperature(value=60.0))
-    db.commit()
-    db.close()
-    return {"message": "DB file created with sample value ✅"}
+
 
 # --- HiveMQ Cloud MQTT Configuration ---
 broker_address = "06447fd0d33a4be69d6f7bc3c427e716.s1.eu.hivemq.cloud"
