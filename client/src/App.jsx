@@ -11,8 +11,11 @@ function App() {
 
       {/* Top Header */}
       <div className="top-bar">
-        <img src="/logo.png" alt="logo" className="logo" />
-        <h1 className="title">TEMP NEXUS</h1>
+        <div className="logo-title">
+  <img src="/logoo.png" alt="logo" className="logo" />
+  <h1 className="title">TEMP NEXUS</h1>
+</div>
+
         <button className="mode-toggle" onClick={() => setDarkMode(!darkMode)}>
           {darkMode ? "light mode" : "night mode"}
         </button>

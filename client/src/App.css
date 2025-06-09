@@ -44,14 +44,23 @@ body, html {
 }
 
 .logo {
-  height: 50px;
+  height: 80px; /* was 50px */
+  margin-right: 20px; /* spacing between logo and title */
 }
 
-.title {
-  font-size: 2rem;
-  font-weight: bold;
-  text-shadow: 2px 2px 4px #000;
+
+.logo-title {
+  display: flex;
+  align-items: center;
 }
+.title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #00bfff; /* tech blue */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.6);
+  margin: 0;
+}
+
 
 .mode-toggle {
   background: none;
