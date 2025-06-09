@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from "react";
 import "./App.css";
 
@@ -34,24 +33,4 @@ function App() {
   );
 }
 
-=======
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/Home';
-import About from './pages/About';
-import Graph from './pages/Graph';
-import History from './pages/History';
-
-const App = () => (
-  <Router>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/about" element={<About />} />
-      <Route path="/graph" element={<Graph />} />
-      <Route path="/history" element={<History />} />
-    </Routes>
-  </Router>
-);
-
->>>>>>> 0b098a8fa5321edf2a31aba99bd08be7dcdcca3e
 export default App;
