@@ -1,38 +1,73 @@
 import React, { useState } from "react";
+import { FaUserFriends, FaChartLine, FaHistory } from "react-icons/fa";
+import { FaSun, FaMoon } from "react-icons/fa";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import About from "./components/About";
+import Graph from "./components/Graph";
+import History from "./components/History";
+import IotTempLogo from "./components/IotTempLogo";
 import "./App.css";
 
-function App() {
-  const [darkMode, setDarkMode] = useState(true);
-
+function Home({ darkMode, setDarkMode }) {
   return (
-    <div className={darkMode ? "app dark" : "app light"}>
+    <>
       {/* Background GIF */}
       <div className="background-gif" />
 
       {/* Top Header */}
       <div className="top-bar">
         <div className="logo-title">
-  <img src="/logoo.png" alt="logo" className="logo" />
-  <h1 className="title">TEMP NEXUS</h1>
-</div>
-
+          <IotTempLogo size={80} />
+          <h1 className="title">TEMP NEXUS</h1>
+        </div>
         <button className="mode-toggle" onClick={() => setDarkMode(!darkMode)}>
-          {darkMode ? "light mode" : "night mode"}
+          {darkMode ? <FaSun size={24} title="Switch to light mode" /> : <FaMoon size={24} title="Switch to dark mode" />}
         </button>
       </div>
 
       {/* Quote / Motto */}
       <div className="motto">
-        <p className="quote">“We Capture What Moves”</p>
+        <p className="quote floating-quote">
+          Watching every degree<br />so you don't have to
+        </p>
       </div>
 
-      {/* Navigation Circles */}
+      {/* Navigation Circles with Icons */}
       <div className="nav-circles">
-        <div className="circle" onClick={() => window.location.href = "/about"} />
-        <div className="circle" onClick={() => window.location.href = "/graph"} />
-        <div className="circle" onClick={() => window.location.href = "/history"} />
+        <Link to="/about" className="circle-link">
+          <div className="circle">
+            <FaUserFriends className="circle-icon" title="About Us" />
+          </div>
+        </Link>
+        <Link to="/graph" className="circle-link">
+          <div className="circle">
+            <FaChartLine className="circle-icon" title="Graph" />
+          </div>
+        </Link>
+        <Link to="/history" className="circle-link">
+          <div className="circle">
+            <FaHistory className="circle-icon" title="History" />
+          </div>
+        </Link>
       </div>
-    </div>
+    </>
+  );
+}
+
+function App() {
+  const [darkMode, setDarkMode] = useState(true);
+
+  return (
+    <Router>
+      <div className={darkMode ? "app dark" : "app light"}>
+        <Routes>
+          <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/graph" element={<Graph />} />
+          <Route path="/history" element={<History />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
