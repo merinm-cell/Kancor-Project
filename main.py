@@ -12,6 +12,7 @@ import queue
 import threading
 import smtplib
 from email.message import EmailMessage
+import time
 
 ALERT_LOW = 7.0
 ALERT_HIGH = 10.0
@@ -39,7 +40,7 @@ class Temperature(Base):
     __tablename__ = "temperatures"
     id = Column(Integer, primary_key=True, index=True)
     value = Column(Float)
-    timestamp = Column(DateTime, default=lambda: datetime.now(ZoneInfo("UTC")))
+    timestamp = Column(DateTime, default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")))
 
 Base.metadata.create_all(bind=engine)
 
@@ -55,12 +56,10 @@ async def websocket_endpoint(websocket: WebSocket):
     connected_clients.add(websocket)
     try:
         while True:
-            # Check for messages in the queue
-            try:
-                temp_value = message_queue.get_nowait()
-                await websocket.send_text(str(temp_value))
-            except queue.Empty:
-                await asyncio.sleep(0.1)  # Avoid busy loop
+            temp_data = message_queue.get_nowait()
+            await websocket.send_json(temp_data)  # Send both value & timestamp as JSON
+    except queue.Empty:
+        await asyncio.sleep(0.1)
     except WebSocketDisconnect:
         connected_clients.remove(websocket)
         logger.info("WebSocket client disconnected")
@@ -138,7 +137,11 @@ def on_message(client, userdata, msg):
         logger.info(f"📡 Stored temperature: {temp_value}")
 
         # WebSocket broadcast
-        message_queue.put(temp_value)
+        message_queue.put({
+            "value": temp_value,
+            "timestamp": datetime.now(ZoneInfo("Asia/Kolkata")).isoformat()
+        })
+
 
         # ALERT CHECK AND EMAIL
         if temp_value < ALERT_LOW or temp_value > ALERT_HIGH:
@@ -159,7 +162,7 @@ def on_disconnect(client, userdata, rc, properties=None):
             break
         except Exception as e:
             logger.error(f"Reconnection failed: {e}")
-            time.sleep(5)
+            time.sleep(100)
 
 # --- Set up MQTT Client ---
 mqtt_client = mqtt.Client(client_id=client_id, callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
