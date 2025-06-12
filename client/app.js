@@ -7,7 +7,7 @@ function App() {
 
   // Fetch historical data on mount
   useEffect(() => {
-    fetch("https://kancor-project.onrender.com/temperature")
+    fetch("wss://kancor-project.onrender.com/ws/temperature")
       .then((res) => res.json())
       .then((history) => {
         const formatted = history.map((item) => ({
