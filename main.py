@@ -56,16 +56,20 @@ async def websocket_endpoint(websocket: WebSocket):
     connected_clients.add(websocket)
     try:
         while True:
-            temp_data = message_queue.get_nowait()
-            await websocket.send_json(temp_data)  # Send both value & timestamp as JSON
-    except queue.Empty:
-        await asyncio.sleep(0.1)
+            try:
+                # Check if new temperature data is in the queue
+                temp_data = message_queue.get_nowait()
+                await websocket.send_json(temp_data)
+            except queue.Empty:
+                # If no data, just wait a bit and continue
+                await asyncio.sleep(0.2)
     except WebSocketDisconnect:
         connected_clients.remove(websocket)
         logger.info("WebSocket client disconnected")
     except Exception as e:
         connected_clients.remove(websocket)
         logger.error(f"WebSocket error: {e}")
+
 
 # --- API Endpoints ---
 @app.get("/")

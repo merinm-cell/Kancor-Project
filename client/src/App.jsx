@@ -7,7 +7,6 @@ import Graph from "./components/Graph";
 import History from "./components/History";
 import IotTempLogo from "./components/IotTempLogo";
 import "./App.css";
-import TemperatureHistory from "./componentsh/TemperatureHistory";
 
 
 function Home({ darkMode, setDarkMode }) {
