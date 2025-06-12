@@ -122,12 +122,12 @@ def send_temperature_alert(temp_value: float):
         logger.error(f"❌ Failed to send alert email: {e}")
 
 
-def on_connect(client, userdata, flags, rc, properties=None):
-    if rc == 0:
+def on_connect(client, userdata, flags, reason_code, properties=None):
+    if reason_code == 0:
         logger.info("✅ Connected to HiveMQ Cloud")
         client.subscribe(topic, qos=1)
     else:
-        logger.error(f"❌ Connection failed with code {rc}")
+        logger.error(f"❌ Connection failed with code {reason_code}")
 
 def on_message(client, userdata, msg):
     try:
@@ -157,8 +157,8 @@ def on_message(client, userdata, msg):
         logger.error(f"❌ Error processing message: {e}")
 
 
-def on_disconnect(client, userdata, rc, properties=None):
-    logger.warning(f"Disconnected with code {rc}. Reconnecting...")
+def on_disconnect(client, userdata, disconnect_flags, reason_code, properties):
+    logger.warning(f"Disconnected with code {reason_code}. Reconnecting...")
     while not client.is_connected():
         try:
             client.reconnect()

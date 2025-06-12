@@ -9,7 +9,7 @@ function Graph() {
 
   useEffect(() => {
     // ⭐ Setup WebSocket connection
-    socketRef.current = new WebSocket("wss://kancor-project.onrender.com/ws/temperature");
+    socketRef.current = new WebSocket("ws://localhost:8000/ws/temperature");
 
     socketRef.current.onmessage = (event) => {
       const msg = JSON.parse(event.data);
