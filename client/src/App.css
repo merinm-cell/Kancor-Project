@@ -448,3 +448,32 @@ body, html {
   line-height: 1.6;
   white-space: pre-wrap;
 }
+
+
+
+.history-container {
+  padding: 2rem;
+  font-family: sans-serif;
+}
+
+.date-section {
+  margin-bottom: 2rem;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.alert-row {
+  background-color: rgba(240, 9, 9, 0.2); 
+  font-weight: bold;
+}
+

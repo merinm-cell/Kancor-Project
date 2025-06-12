@@ -13,6 +13,8 @@ import threading
 import smtplib
 from email.message import EmailMessage
 import time
+from fastapi.middleware.cors import CORSMiddleware
+
 
 ALERT_LOW = 7.0
 ALERT_HIGH = 10.0
@@ -29,6 +31,16 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # --- Database Setup ---
 DATABASE_URL = "sqlite:///./temperature.db"
@@ -155,6 +167,18 @@ def on_message(client, userdata, msg):
         logger.error(f"❌ Invalid payload: {value}, error: {e}")
     except Exception as e:
         logger.error(f"❌ Error processing message: {e}")
+
+@app.get("/temperature-history")
+async def get_temperature_history():
+    with SessionLocal() as db:
+        temps = db.query(Temperature).all()
+        return [
+            {
+                "value": t.value,
+                "timestamp": t.timestamp.isoformat()
+            }
+            for t in temps
+        ]
 
 
 def on_disconnect(client, userdata, disconnect_flags, reason_code, properties):
