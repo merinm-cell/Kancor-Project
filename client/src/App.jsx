@@ -4,19 +4,15 @@ import { FaSun, FaMoon } from "react-icons/fa";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import About from "./components/About";
 import Graph from "./components/Graph";
-import History from "./components/History";
 import IotTempLogo from "./components/IotTempLogo";
 import "./App.css";
-import TemperatureHistory from "./componentsh/TemperatureHistory";
-
+import TemperatureHistory from "./pages/TemperatureHistory";
 
 function Home({ darkMode, setDarkMode }) {
   return (
     <>
-      {/* Background GIF */}
       <div className="background-gif" />
 
-      {/* Top Header */}
       <div className="top-bar">
         <div className="logo-title">
           <IotTempLogo size={80} />
@@ -27,14 +23,12 @@ function Home({ darkMode, setDarkMode }) {
         </button>
       </div>
 
-      {/* Quote / Motto */}
       <div className="motto">
         <p className="quote floating-quote">
           Watching every degree<br />so you don't have to
         </p>
       </div>
 
-      {/* Navigation Circles with Icons */}
       <div className="nav-circles">
         <Link to="/about" className="circle-link">
           <div className="circle">
@@ -66,7 +60,7 @@ function App() {
           <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />} />
           <Route path="/about" element={<About />} />
           <Route path="/graph" element={<Graph />} />
-          <Route path="/history" element={<History />} />
+          <Route path="/history" element={<TemperatureHistory />} />
         </Routes>
       </div>
     </Router>
