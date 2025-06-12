@@ -31,13 +31,13 @@ logger = logging.getLogger(__name__)
 app = FastAPI()
 
 # --- Database Setup ---
-DATABASE_URL = "sqlite:///./temperatures.db"
+DATABASE_URL = "sqlite:///./temperature.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
 
 class Temperature(Base):
-    __tablename__ = "temperatures"
+    __tablename__ = "temperature"
     id = Column(Integer, primary_key=True, index=True)
     value = Column(Float)
     timestamp = Column(DateTime, default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")))
@@ -76,7 +76,7 @@ async def websocket_endpoint(websocket: WebSocket):
 async def home():
     return {"message": "FastAPI + HiveMQ MQTT backend is running 🚀"}
 
-@app.get("/temperatures")
+@app.get("/temperature")
 async def get_temperatures():
     with SessionLocal() as db:
         temps = db.query(Temperature).all()
