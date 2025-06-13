@@ -63,9 +63,10 @@ function App() {
       <div className={darkMode ? "app dark" : "app light"}>
         <Routes>
           <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/graph" element={<Graph />} />
-          <Route path="/history" element={<History />} />
+          <Route path="/about" element={<About darkMode={darkMode} setDarkMode={setDarkMode} />} />
+          <Route path="/graph" element={<Graph darkMode={darkMode} setDarkMode={setDarkMode} />} />
+          <Route path="/history" element={<History darkMode={darkMode} setDarkMode={setDarkMode} />} />
+
         </Routes>
       </div>
     </Router>

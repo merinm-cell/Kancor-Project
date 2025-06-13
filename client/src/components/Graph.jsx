@@ -9,7 +9,7 @@ function Graph() {
 
   useEffect(() => {
     // ⭐ Setup WebSocket connection
-    socketRef.current = new WebSocket("ws://localhost:8000/ws/temperature");
+    socketRef.current = new WebSocket("wss://kancor-project.onrender.com/ws/temperature");
 
     socketRef.current.onmessage = (event) => {
       const msg = JSON.parse(event.data);
@@ -46,7 +46,7 @@ function Graph() {
         <LineChart data={data}>
           <CartesianGrid stroke="#333" strokeDasharray="3 3" /> {/* ⭐ Slightly dimmer grid */}
           <XAxis dataKey="time" stroke="#fff" />
-          <YAxis domain={[0, 50]} stroke="#fff"
+          <YAxis domain={[0, 20]} stroke="#fff"
             label={{
               value: "°C",
               angle: -90,

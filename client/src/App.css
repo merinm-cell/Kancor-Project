@@ -453,27 +453,58 @@ body, html {
 
 .history-container {
   padding: 2rem;
-  font-family: sans-serif;
+  max-width: 1000px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+  color: #f4f4f4;
 }
 
 .date-section {
   margin-bottom: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 1.2rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 16px rgba(0, 229, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.date-section h3 {
+  font-size: 1.3rem;
+  color: #00f0ff;
+  margin-bottom: 1rem;
 }
 
 .history-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 1rem;
 }
 
 .history-table th,
 .history-table td {
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  text-align: center;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid #333;
 }
 
-.alert-row {
-  background-color: rgba(240, 9, 9, 0.2); 
-  font-weight: bold;
+.history-table th {
+  background-color: #1e293b;
+  color: #a2c6ff;
 }
+
+.history-table td {
+  background-color: #0f172a;
+  transition: background 0.3s ease;
+}
+
+.history-table tr:hover td {
+  background-color: #1e293b;
+}
+
+.alert-row td {
+  background-color: rgba(255, 0, 0, 0.15);
+  color: #ff6b6b;
+  font-weight: bold;
+}
+
 
