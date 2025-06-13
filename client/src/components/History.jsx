@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "../App.css"; // or your own css path
+import "../App.css"; 
 
 function History() {
   const [groupedData, setGroupedData] = useState({});
 
   useEffect(() => {
-    axios.get("http://127.0.0.1:8000/temperature-history")
+    axios.get("https://kancor-project.onrender.com/temperature-history")
       .then((response) => {
         const data = response.data;
 
