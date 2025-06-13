@@ -13,6 +13,8 @@ import threading
 import smtplib
 from email.message import EmailMessage
 import time
+from fastapi.middleware.cors import CORSMiddleware
+
 
 ALERT_LOW = 7.0
 ALERT_HIGH = 10.0
@@ -30,14 +32,24 @@ logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
 # --- Database Setup ---
-DATABASE_URL = "sqlite:///./temperatures.db"
+DATABASE_URL = "sqlite:///./temperature.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
 Base = declarative_base()
 
 class Temperature(Base):
-    __tablename__ = "temperatures"
+    __tablename__ = "temperature"
     id = Column(Integer, primary_key=True, index=True)
     value = Column(Float)
     timestamp = Column(DateTime, default=lambda: datetime.now(ZoneInfo("Asia/Kolkata")))
@@ -56,10 +68,13 @@ async def websocket_endpoint(websocket: WebSocket):
     connected_clients.add(websocket)
     try:
         while True:
-            temp_data = message_queue.get_nowait()
-            await websocket.send_json(temp_data)  # Send both value & timestamp as JSON
-    except queue.Empty:
-        await asyncio.sleep(0.1)
+            try:
+                # Check if new temperature data is in the queue
+                temp_data = message_queue.get_nowait()
+                await websocket.send_json(temp_data)
+            except queue.Empty:
+                # If no data, just wait a bit and continue
+                await asyncio.sleep(0.2)
     except WebSocketDisconnect:
         connected_clients.remove(websocket)
         logger.info("WebSocket client disconnected")
@@ -67,12 +82,13 @@ async def websocket_endpoint(websocket: WebSocket):
         connected_clients.remove(websocket)
         logger.error(f"WebSocket error: {e}")
 
+
 # --- API Endpoints ---
 @app.get("/")
 async def home():
     return {"message": "FastAPI + HiveMQ MQTT backend is running 🚀"}
 
-@app.get("/temperatures")
+@app.get("/temperature")
 async def get_temperatures():
     with SessionLocal() as db:
         temps = db.query(Temperature).all()
@@ -118,12 +134,12 @@ def send_temperature_alert(temp_value: float):
         logger.error(f"❌ Failed to send alert email: {e}")
 
 
-def on_connect(client, userdata, flags, rc, properties=None):
-    if rc == 0:
+def on_connect(client, userdata, flags, reason_code, properties=None):
+    if reason_code == 0:
         logger.info("✅ Connected to HiveMQ Cloud")
         client.subscribe(topic, qos=1)
     else:
-        logger.error(f"❌ Connection failed with code {rc}")
+        logger.error(f"❌ Connection failed with code {reason_code}")
 
 def on_message(client, userdata, msg):
     try:
@@ -152,9 +168,21 @@ def on_message(client, userdata, msg):
     except Exception as e:
         logger.error(f"❌ Error processing message: {e}")
 
+@app.get("/temperature-history")
+async def get_temperature_history():
+    with SessionLocal() as db:
+        temps = db.query(Temperature).all()
+        return [
+            {
+                "value": t.value,
+                "timestamp": t.timestamp.isoformat()
+            }
+            for t in temps
+        ]
 
-def on_disconnect(client, userdata, rc, properties=None):
-    logger.warning(f"Disconnected with code {rc}. Reconnecting...")
+
+def on_disconnect(client, userdata, disconnect_flags, reason_code, properties):
+    logger.warning(f"Disconnected with code {reason_code}. Reconnecting...")
     while not client.is_connected():
         try:
             client.reconnect()

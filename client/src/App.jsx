@@ -8,6 +8,7 @@ import History from "./components/History";
 import IotTempLogo from "./components/IotTempLogo";
 import "./App.css";
 
+
 function Home({ darkMode, setDarkMode }) {
   return (
     <>

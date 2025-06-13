@@ -8,8 +8,9 @@ body, html {
 .app {
   position: relative;
   width: 100vw;
-  height: 100vh;
-  overflow: hidden;
+  min-height: 100vh;    /* Allow page to grow */
+  overflow-x: hidden;   /* Only hide horizontal overflow */
+  /* Remove: height: 100vh; and overflow: hidden; */
 }
 
 /* Light and Dark Mode */
@@ -196,3 +197,283 @@ body, html {
   opacity: 0.25; /* Adjust opacity as needed */
   z-index: 0;
 }
+.about-wrapper {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  color: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+.about-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.4); /* darkens image for readability */
+  z-index: -1;
+}
+
+.fixed-logo {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.fixed-logo img {
+  height: 60px;
+  width: auto;
+}
+
+.about-overlay {
+  display: flex;
+  height: 100vh;
+  padding: 80px 40px;
+  gap: 2rem;
+  overflow-y: auto;
+}
+
+.about-sidebar {
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(0, 0, 0, 0.4);
+  padding: 20px;
+  border-radius: 12px;
+}
+
+.sidebar-item {
+  background: none;
+  border: none;
+  color: #fff;
+  text-align: left;
+  padding: 10px 0;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.sidebar-item:hover {
+  color: #00ffcc;
+}
+
+.about-content {
+  flex: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 30px;
+  border-radius: 12px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.about-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: #00ffcc;
+}
+
+.about-text {
+  line-height: 1.8;
+  margin-bottom: 1rem;
+}
+.about-container {
+  color: white;
+  min-height: 100vh;
+  background-color: #121212;
+  position: relative;
+  padding-top: 100px;
+}
+
+.top-left-logo {
+  position: fixed;
+  top: 10px;
+  left: 20px;
+  width: 80px;
+  height: auto;
+  z-index: 999;
+}
+
+.about-image-section {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  overflow: hidden;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.about-image-section.fade-out {
+  opacity: 0.2;
+}
+
+.about-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bottom-right-logo {
+  position: absolute;
+  bottom: 10px;
+  right: 20px;
+  width: 100px;
+  height: auto;
+}
+
+.mk3-banner-new {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 45vw; /* Increased from 40vw */
+  height: 100vh;
+  z-index: 1;
+  overflow: hidden;
+}
+.mk3-full-new {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.about-page {
+  min-height: 100vh;
+  background-color: #121212;
+  color: white;
+  font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  width: 100vw;
+  /* Remove any height: 100vh or overflow: hidden here */
+}
+
+/* Fixed left-side logo vertically centered */
+.fixed-logo-container {
+  position: fixed;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  z-index: 999;
+  background-color: white;
+  padding: 1rem;
+}
+
+.vertical-logo {
+  width: 100px;
+  height: auto;
+}
+.logo-over-mk3 {
+  position: absolute;
+  left: -60px;
+  bottom: -20px;
+  width: 210px;
+  height: auto;
+  background:fixed transparent !important;
+  z-index: 2;
+  pointer-events: none; /* So it doesn't block interaction with the image */
+}
+/* Banner image right of logo */
+.mk3-banner-new {
+  margin-left: 55px; /* Space for logo */
+  width: calc(100% - 120px);
+  height: 60vh;
+  overflow: visible;
+  position: relative;
+  transition: opacity 0.5s ease-in-out;
+}
+
+.mk3-banner-new.fade-out {
+  opacity: 0.2;
+}
+
+.mk3-full-new {
+  width: 100%;
+  height: 100%;
+  object-fit:cover;
+  display:inline-block;
+}
+
+/* Scrollable content */
+.content-section {
+  display: flex;
+  flex-direction: row;
+  padding: 2rem;
+  gap: 2rem;
+  margin-left: 120px; /* Align with logo and banner */
+  margin-left: 120px; /* Align with logo and banner */
+}
+
+.sidebar {
+  flex: 0 0 250px;
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 100px;
+  height: fit-content;
+}
+
+.sidebar-button {
+  background-color: #1e1e1e;
+  color: white;
+  border: none;
+  margin-bottom: 1rem;
+  padding: 0.8rem 1.2rem;
+  text-align: left;
+  cursor: pointer;
+  border-left: 4px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.sidebar-button:hover,
+.sidebar-button.active {
+  background-color: #333;
+  border-left: 4px solid #4caf50;
+}
+
+.text-section {
+  flex: 1;
+  max-width: 800px;
+}
+
+.section-heading {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.section-text {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+
+
+.history-container {
+  padding: 2rem;
+  font-family: sans-serif;
+}
+
+.date-section {
+  margin-bottom: 2rem;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.history-table th,
+.history-table td {
+  padding: 0.75rem;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.alert-row {
+  background-color: rgba(240, 9, 9, 0.2); 
+  font-weight: bold;
+}
+

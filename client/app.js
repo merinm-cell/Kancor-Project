@@ -1,30 +1,54 @@
-import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client";
+import React, { useEffect, useState, useRef } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
-
-const socket = io("http://localhost:8000"); // FastAPI WebSocket endpoint
 
 function App() {
   const [data, setData] = useState([]);
+  const socketRef = useRef(null);
 
+  // Fetch historical data on mount
   useEffect(() => {
-    socket.on("new_data", (payload) => {
-      // Append new data point
-      setData((prev) => [...prev, payload]);
-    });
+    fetch("wss://kancor-project.onrender.com/ws/temperature")
+      .then((res) => res.json())
+      .then((history) => {
+        const formatted = history.map((item) => ({
+          time: new Date(item.timestamp).toLocaleTimeString(),
+          temperature: item.value,
+        }));
+        setData(formatted);
+      });
+  }, []);
 
-    return () => socket.disconnect();
+  // Set up WebSocket connection
+  useEffect(() => {
+    socketRef.current = new WebSocket("wss://kancor-project.onrender.com/ws/temperature");
+
+    socketRef.current.onmessage = (event) => {
+      try {
+        const msg = JSON.parse(event.data); // { value, timestamp }
+        const newEntry = {
+          time: new Date(msg.timestamp).toLocaleTimeString(),
+          temperature: msg.value,
+        };
+        setData((prev) => [...prev.slice(-19), newEntry]); // keep last 20 points
+      } catch (e) {
+        console.error("WebSocket data error:", e);
+      }
+    };
+
+    return () => {
+      if (socketRef.current) socketRef.current.close();
+    };
   }, []);
 
   return (
-    <div className="App">
-      <h1>Live MQTT Chart</h1>
+    <div className="App" style={{ padding: "20px" }}>
+      <h2>📈 Live Temperature Chart</h2>
       <LineChart width={800} height={400} data={data}>
         <CartesianGrid stroke="#ccc" />
-        <XAxis dataKey="timestamp" />
-        <YAxis />
+        <XAxis dataKey="time" />
+        <YAxis domain={["auto", "auto"]} />
         <Tooltip />
-        <Line type="monotone" dataKey="value" stroke="#8884d8" dot={false} />
+        <Line type="monotone" dataKey="temperature" stroke="#8884d8" dot={false} />
       </LineChart>
     </div>
   );
