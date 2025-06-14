@@ -97,7 +97,7 @@ function Graph() {
           <CartesianGrid stroke="#333" strokeDasharray="3 3" />
           <XAxis dataKey="time" stroke="#fff" />
           <YAxis
-            domain={[0, 30]}
+            domain={[0, 40]}
             stroke="#fff"
             label={{
               value: "°C",
