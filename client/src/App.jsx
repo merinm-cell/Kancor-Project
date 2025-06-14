@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { FaUserFriends, FaChartLine, FaHistory } from "react-icons/fa";
-import { FaSun, FaMoon } from "react-icons/fa";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import About from "./components/About";
 import Graph from "./components/Graph";
@@ -8,8 +7,7 @@ import History from "./components/History";
 import IotTempLogo from "./components/IotTempLogo";
 import "./App.css";
 
-
-function Home({ darkMode, setDarkMode }) {
+function Home() {
   return (
     <>
       {/* Background GIF */}
@@ -21,9 +19,6 @@ function Home({ darkMode, setDarkMode }) {
           <IotTempLogo size={80} />
           <h1 className="title">TEMP NEXUS</h1>
         </div>
-        <button className="mode-toggle" onClick={() => setDarkMode(!darkMode)}>
-          {darkMode ? <FaSun size={24} title="Switch to light mode" /> : <FaMoon size={24} title="Switch to dark mode" />}
-        </button>
       </div>
 
       {/* Quote / Motto */}
@@ -56,17 +51,14 @@ function Home({ darkMode, setDarkMode }) {
 }
 
 function App() {
-  const [darkMode, setDarkMode] = useState(true);
-
   return (
     <Router>
-      <div className={darkMode ? "app dark" : "app light"}>
+      <div className="app dark"> {/* Always use dark mode class */}
         <Routes>
-          <Route path="/" element={<Home darkMode={darkMode} setDarkMode={setDarkMode} />} />
-          <Route path="/about" element={<About darkMode={darkMode} setDarkMode={setDarkMode} />} />
-          <Route path="/graph" element={<Graph darkMode={darkMode} setDarkMode={setDarkMode} />} />
-          <Route path="/history" element={<History darkMode={darkMode} setDarkMode={setDarkMode} />} />
-
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/graph" element={<Graph />} />
+          <Route path="/history" element={<History />} />
         </Routes>
       </div>
     </Router>
